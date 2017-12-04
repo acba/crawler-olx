@@ -15,6 +15,7 @@ class OlxItem(scrapy.Item):
     data            = scrapy.Field()
     titulo          = scrapy.Field()
     preco           = scrapy.Field()
+    condominio      = scrapy.Field()
     tipo            = scrapy.Field()
     area_util       = scrapy.Field()
     area_construida = scrapy.Field()

@@ -10,7 +10,7 @@ class ImoveisSpider(scrapy.Spider):
     name = 'imoveis'
     allowed_domains = ['pb.olx.com.br']
     #start_urls = ['http://pb.olx.com.br/']
-    start_urls = ['http://pb.olx.com.br/paraiba/joao-pessoa/imoveis/venda']
+    start_urls = ['http://pb.olx.com.br/paraiba/joao-pessoa/imoveis/aluguel']
 
     converteMes = {
         "Janeiro":   1,
@@ -59,7 +59,11 @@ class ImoveisSpider(scrapy.Spider):
 
         preco               = response.xpath('normalize-space(//span[contains(@class,"actual-price")])').re("R\$ (.*)")
         preco               = (preco and preco[0]) or 0
-        imovel['preco']     = int(re.sub('[^0-9]', '', preco))
+        if preco != 0:
+            imovel['preco']     = int(re.sub('[^0-9]', '', preco))
+        else:
+            imovel['preco']     = preco
+
 
         imovel['descricao'] = response.xpath('normalize-space(//div[contains(@class,"OLXad-description")]//p)').extract_first()
 
@@ -83,6 +87,8 @@ class ImoveisSpider(scrapy.Spider):
                 imovel['n_quartos'] = valor
             elif (atributo == 'Vagas na garagem:'):
                 imovel['vagas_garagem'] = valor
+            elif (atributo == 'Condomínio:'):
+                imovel['condominio'] = valor
 
         localizacao = response.xpath('//div[contains(@class, "OLXad-location")]//li[contains(@class, "item")]')
 
